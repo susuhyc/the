@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="test">
+    <sql id="userAtr">
+        #{id},#{user_id},#{user_name},#{user_age}
+    </sql>
+    <sql id="userPro">
+        id,user_id,user_name,user_age
+    </sql>
+
+    <insert id="saveUser" parameterType="java.util.HashMap">
+        insert into t_test_user (<include refid="userPro"></include>)
+        values (<include refid="userAtr"></include>)
+    </insert>
+
+    <update id="updateUser" parameterType="java.util.HashMap">
+        UPDATE TABLE t_test_user SET user_name=#{user_name} WHERE id=#{id}
+    </update>
+
+    <select id="queryUser" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        SELECT
+        <include refid="userPro"></include>
+        FROM t_test_user
+        WHERE 1=1
+        <if test="user_name != null">
+            AND user_name LIKE '%${user_name}%'
+        </if>
+    </select>
+
+    <select id="selectUser" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        SELECT <include refid="userPro"></include> FROM t_test_user
+        WHERE 1=1
+        <choose>
+            <when test="id!=null">
+                AND id=#{id}
+            </when>
+            <when test="user_name != null">
+                AND  user_name LIKE  '%${user_name}%'
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="whereUser" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        SELECT
+        <include refid="userPro"></include>
+        FROM t_test_user
+        <where>
+            <if test="user_name != null">
+                user_name LIKE '%${user_name}%'
+            </if>
+            <if test="user_age != null">
+                AND user_age = #{user_age}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectIn" resultType="java.util.HashMap">
+        SELECT *
+        FROM t_test_user
+        WHERE ID in
+        <foreach item="item" index="index" collection="list"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <update id="setUpdateUser" >
+        UPDATE  t_test_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="user_name != null">user_name=#{user_name},</if>
+            <if test="user_age != null">user_age=#{user_age},</if>
+        </trim>
+        WHERE user_id = #{user_id}
+    </update>
+</mapper>
