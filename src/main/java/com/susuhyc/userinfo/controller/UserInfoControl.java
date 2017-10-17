@@ -1,4 +1,4 @@
-package com.susuhyc.controller.userinfocontrol;
+package com.susuhyc.userinfo.controller;
 
 import org.springframework.stereotype.Controller;
 
