@@ -18,4 +18,8 @@ public class UserInfoServiceImpl implements UserInfoService {
     public void saveUser(UserInfo userInfo) {
          userInfoDao.saveUser(userInfo);
     }
+
+    public UserInfo findUserByUserNameAndPassword(String userName, String password) {
+        return userInfoDao.findUserByUserNameAndPassword(userName,password);
+    }
 }

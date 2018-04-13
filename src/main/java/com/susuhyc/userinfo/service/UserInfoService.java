@@ -8,4 +8,13 @@ import com.susuhyc.userinfo.model.UserInfo;
 
 public interface UserInfoService {
     void saveUser(UserInfo userInfo);
+
+    /**
+     * 根据用户名和密码查询用户信息
+     * @param userName
+     * @param password
+     * @return
+     */
+    UserInfo findUserByUserNameAndPassword(String userName,String password);
+
 }

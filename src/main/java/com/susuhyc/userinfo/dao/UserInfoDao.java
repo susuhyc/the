@@ -9,6 +9,18 @@ import org.springframework.stereotype.Repository;
  */
 @Repository("userInfoDao")
 public interface UserInfoDao {
+    /**
+     * 添加用户信息
+     * @param userInfo
+     */
     void saveUser(UserInfo userInfo);
+
+    /**
+     * 根据用户名和密码查询用户信息
+     * @param userName
+     * @param password
+     * @return
+     */
+    UserInfo findUserByUserNameAndPassword(@Param("userName")String userName,@Param("password")String password);
 }
 

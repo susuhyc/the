@@ -4,15 +4,15 @@
 
 <mapper namespace="com.susuhyc.userinfo.dao.UserInfoDao">
     <sql id="userAtr">
-        #{id},#{user_id},#{user_name},#{user_age}
+        #{id},#{user_id},#{user_name},#{user_age},#{password}
     </sql>
     <sql id="userPro">
-        id,user_id,user_name,user_age
+        id,user_id,user_name,user_age,password
     </sql>
 
     <insert id="saveUser" parameterType="java.util.HashMap">
-        insert into t_test_user (<include refid="userPro"></include>)
-        values (<include refid="userAtr"></include>)
+        insert into t_test_user (<include refid="userPro"/>)
+        values (<include refid="userAtr"/>)
     </insert>
 
     <update id="updateUser" parameterType="java.util.HashMap">
@@ -30,7 +30,7 @@
     </select>
 
     <select id="selectUser" parameterType="java.util.HashMap" resultType="java.util.HashMap">
-        SELECT <include refid="userPro"></include> FROM t_test_user
+        SELECT <include refid="userPro"/> FROM t_test_user
         WHERE 1=1
         <choose>
             <when test="id!=null">
@@ -68,12 +68,11 @@
         </foreach>
     </select>
 
-    <update id="setUpdateUser" >
-        UPDATE  t_test_user
-        <trim prefix="set" suffixOverrides=",">
-            <if test="user_name != null">user_name=#{user_name},</if>
-            <if test="user_age != null">user_age=#{user_age},</if>
-        </trim>
-        WHERE user_id = #{user_id}
-    </update>
+    <select id="findUserByUserNameAndPassword" parameterType="string" resultType="com.susuhyc.userinfo.model.UserInfo">
+        SELECT
+        <include refid="userPro"></include>
+        FROM t_test_user
+        <where> user_name = #{userName} AND password = #{password}</where>
+    </select>
+
 </mapper>

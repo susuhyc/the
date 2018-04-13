@@ -8,6 +8,7 @@ public class UserInfo {
     private String userId;
     private String userName;
     private Integer userAge;
+    private String password;
 
     public String getId() {
         return id;
@@ -41,6 +42,14 @@ public class UserInfo {
         this.userAge = userAge;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String toString() {
         return "UserInfo{" +
@@ -48,6 +57,7 @@ public class UserInfo {
                 ", userId='" + userId + '\'' +
                 ", userName='" + userName + '\'' +
                 ", userAge=" + userAge +
+                ", password=" + password +
                 '}';
     }
 }
