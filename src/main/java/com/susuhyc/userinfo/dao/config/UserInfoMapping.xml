@@ -4,7 +4,7 @@
 
 <mapper namespace="com.susuhyc.userinfo.dao.UserInfoDao">
     <sql id="userAtr">
-        #{id},#{user_id},#{user_name},#{user_age},#{password}
+        #{id},#{userId},#{userName},#{userAge},#{password}
     </sql>
     <sql id="userPro">
         id,user_id,user_name,user_age,password

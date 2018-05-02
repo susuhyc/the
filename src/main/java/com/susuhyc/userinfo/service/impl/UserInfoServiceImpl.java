@@ -15,10 +15,14 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Resource
     private UserInfoDao userInfoDao;
+
+
+    @Override
     public void saveUser(UserInfo userInfo) {
          userInfoDao.saveUser(userInfo);
     }
 
+    @Override
     public UserInfo findUserByUserNameAndPassword(String userName, String password) {
         return userInfoDao.findUserByUserNameAndPassword(userName,password);
     }

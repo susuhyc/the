@@ -2,14 +2,19 @@ package com.susuhyc.userinfo.controller;
 
 import com.susuhyc.userinfo.model.UserInfo;
 import com.susuhyc.userinfo.service.UserInfoService;
+import com.susuhyc.util.ShiroRealm;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
@@ -19,11 +24,13 @@ import java.util.Map;
 /**
  * Created by Administrator on 2017/10/16.
  */
-@Controller
+@RestController
+@RequestMapping("user")
 public class UserInfoControl {
 
     @Resource
     private UserInfoService userService;
+    private static final String SESSION_USER_KEY = "SESSION_UUID";
 
     /**
      * 登陆
@@ -31,17 +38,16 @@ public class UserInfoControl {
      * @return
      */
     @RequestMapping("/dologin")
-    public ModelAndView dologin(UserInfo user){
-        Map<String,Object> map = new HashMap<String,Object>();
+    public ModelMap dologin(UserInfo user){
+        ModelMap model = new ModelMap();
         String info = loginUser(user);
         if (!"SUCC".equals(info)) {
-            map.put("failMsg", "用户不存在或密码错误！");
+            model.put("failMsg", "用户不存在或密码错误！");
         }else{
-            map.put("successMsg", "登陆成功！");//返回到页面说夹带的参数
-            map.put("name", user.getUserName());
+            model.put("successMsg", "登陆成功！");//返回到页面说夹带的参数
+            model.put("name", user.getUserName());
         }
-
-        return new ModelAndView("index",map);
+        return model;
     }
     @RequestMapping("/logout.do")
     public ModelAndView logout(){
@@ -67,14 +73,25 @@ public class UserInfoControl {
 
 
     private String loginUser(UserInfo user){
-        if (isRelogin()) return "SUCC"; // 如果已经登陆，无需重新登录
+        if (isRelogin(user)) return "SUCC"; // 如果已经登陆，无需重新登录
         return shiroLogin(user); // 调用shiro的登陆验证
     }
 
-    private boolean isRelogin() {
+    private boolean isRelogin(UserInfo user) {
+        //是否是同一个用户
+        Session session = SecurityUtils.getSubject().getSession();
+        UserInfo userInfo = (UserInfo) session.getAttribute(SESSION_USER_KEY);
+        Boolean isTheSameUser = false;
+        if(userInfo!=null&&userInfo.getUserName().equals(user.getUserName())&&userInfo.getPassword().equals(user.getPassword())){
+            isTheSameUser = true;
+        }
         Subject us = SecurityUtils.getSubject();
-        if (us.isAuthenticated()) {
+        if (us.isAuthenticated()&&isTheSameUser) {
             return true; // 参数未改变，无需重新登录，默认为已经登录成功
+        }
+        //如果不是同一用户 直接退出登陆
+        if(!isTheSameUser){
+            SecurityUtils.getSubject().logout();
         }
         return false; // 需要重新登陆
     }
