@@ -19,10 +19,12 @@
                 /jsp/success.jsp=anon
                 /jsp/fail.jsp=anon
                 /jsp/user.jsp = roles[user]
-                /jsp/admin.jsp = roles[admin]
+                /user/admin = roles[admin]
                 /logout = logout
             </value>
         </property>
+        <!--数据库读取方式-->
+       <!-- <property name="filterChainDefinitions" value="#\{shiroManager.loadFilterChainDefinitions()\}"/>-->
     </bean>
 
     <!-- 配置缓存管理器 -->

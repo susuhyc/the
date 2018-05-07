@@ -9,6 +9,16 @@
     <sql id="userPro">
         id,user_id,user_name,user_age,password
     </sql>
+    <sql id="userRole">
+        id,tu.user_id,user_name,user_age,password,tr.role_id,role_name,role_key
+    </sql>
+    <sql id="where_sql">
+        <trim prefixOverrides="and |or">
+            <if test="param.userId!=null and param.userId !=''"> and tu.user_id = #{param.userId}</if>
+            <if test="param.userName!=null and param.userName !=''"> and tu.user_name = #{param.userName}</if>
+            <if test="param.password!=null and param.password !=''"> and tu.password = #{param.password}</if>
+        </trim>
+    </sql>
 
     <insert id="saveUser" parameterType="java.util.HashMap">
         insert into t_test_user (<include refid="userPro"/>)
@@ -73,6 +83,15 @@
         <include refid="userPro"></include>
         FROM t_test_user
         <where> user_name = #{userName} AND password = #{password}</where>
+    </select>
+
+    <select id="findUserRole" parameterType="com.susuhyc.userinfo.model.UserInfo" resultType="com.susuhyc.userinfo.model.UserInfoVO">
+        SELECT  <include refid="userRole"/> from t_test_user tu
+        LEFT JOIN t_user_role tr on tu.user_id = tr.user_id
+        LEFT JOIN t_role t on t.role_id = tr.role_id
+        <where>
+            <include refid="where_sql"/>
+        </where>
     </select>
 
 </mapper>

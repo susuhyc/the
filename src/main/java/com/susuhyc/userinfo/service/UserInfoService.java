@@ -1,6 +1,9 @@
 package com.susuhyc.userinfo.service;
 
 import com.susuhyc.userinfo.model.UserInfo;
+import com.susuhyc.userinfo.model.UserInfoVO;
+
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/10/16.
@@ -16,5 +19,13 @@ public interface UserInfoService {
      * @return
      */
     UserInfo findUserByUserNameAndPassword(String userName,String password);
+
+
+    /**
+     * 查询用户角色
+     * @param userInfo
+     * @return
+     */
+    List<UserInfoVO> findUserRole(UserInfo userInfo);
 
 }

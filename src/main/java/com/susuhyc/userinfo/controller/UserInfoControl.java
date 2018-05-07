@@ -63,6 +63,13 @@ public class UserInfoControl {
     }
 
 
+    @RequestMapping("/admin")
+    public Map admin(){
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("xxxx","xxxxx");
+        return map;
+    }
+
 
 
 
