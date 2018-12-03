@@ -1,9 +1,8 @@
-package com.susuhyc.util;
+package com.susuhyc.shiro;
 
-import com.susuhyc.userinfo.model.UserInfo;
-import com.susuhyc.userinfo.model.UserInfoVO;
-import com.susuhyc.userinfo.service.UserInfoService;
-import com.susuhyc.userinfo.service.impl.UserInfoServiceImpl;
+import com.susuhyc.syscommons.model.SysUser;
+import com.susuhyc.syscommons.model.SysUserVO;
+import com.susuhyc.syscommons.service.SysUserInfoService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -11,7 +10,6 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -20,14 +18,14 @@ import java.util.stream.Collectors;
 /**
  * Created by IntelliJ IDEA.
  * <p>Created by LISS on 2018/04/13 10:28. </p>
- * <p>Company : TMG </p>
- * <p>Description : youke - ShiroRealm</p>
+ * <p>Company :  </p>
+ * <p>Description : ShiroRealm</p>
  * <p> </p>
  */
 public class ShiroRealm extends AuthorizingRealm {
 
     @Resource
-    private UserInfoService userService;
+    private SysUserInfoService sysUserInfoService;
     private static final String SESSION_USER_KEY = "SESSION_UUID";
 
 
@@ -37,11 +35,11 @@ public class ShiroRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
        //得到session中的值
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-        UserInfo user = (UserInfo) SecurityUtils.getSubject().getSession().getAttribute(ShiroRealm.SESSION_USER_KEY);
+        SysUser user = (SysUser) SecurityUtils.getSubject().getSession().getAttribute(ShiroRealm.SESSION_USER_KEY);
         if(user!=null){
-            List<UserInfoVO> userRole = userService.findUserRole(user);//查出用户所具有的权限
-            List<String> roleKey =  userRole.stream().map(UserInfoVO::getRoleKey).collect(Collectors.toList());
-            info.addRoles(roleKey);//添加用户角色
+            List<SysUserVO> userRole = sysUserInfoService.findUserRole(user);//查出用户所具有的权限
+            List<String> roleIdList =  userRole.stream().map(SysUserVO::getRoleKey).collect(Collectors.toList());
+            info.addRoles(roleIdList);//添加用户角色
         }
         return info;
     }
@@ -55,7 +53,7 @@ public class ShiroRealm extends AuthorizingRealm {
         String userName = userToken.getUsername();
         String password = String.valueOf(userToken.getPassword());
         //根据用户名和密码查询用户信息
-        UserInfo userinfo = userService.findUserByUserNameAndPassword(userName, password);
+        SysUser userinfo = sysUserInfoService.findUserByUserNameAndPassword(userName, password);
         if(userinfo!=null){
             // 设置session
             Session session = SecurityUtils.getSubject().getSession();

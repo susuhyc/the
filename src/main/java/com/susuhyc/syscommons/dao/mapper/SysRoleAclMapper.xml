@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.susuhyc.syscommons.dao.SysRoleAclMapper">
+  <resultMap id="BaseResultMap" type="com.susuhyc.syscommons.model.SysRoleAcl">
+    <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+    <result column="acl_id" jdbcType="VARCHAR" property="aclId" />
+  </resultMap>
+  <insert id="insert" parameterType="com.susuhyc.syscommons.model.SysRoleAcl">
+    insert into s_sys_role_acl (role_id, acl_id)
+    values (#{roleId,jdbcType=VARCHAR}, #{aclId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.susuhyc.syscommons.model.SysRoleAcl">
+    insert into s_sys_role_acl
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="aclId != null">
+        acl_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="aclId != null">
+        #{aclId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

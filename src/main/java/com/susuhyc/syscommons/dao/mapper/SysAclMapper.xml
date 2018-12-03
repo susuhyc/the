@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.susuhyc.syscommons.dao.SysAclMapper" >
+  <resultMap id="BaseResultMap" type="com.susuhyc.syscommons.model.SysAcl" >
+    <id column="acl_id" property="aclId" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="type" property="type" jdbcType="TINYINT" />
+    <result column="icon" property="icon" jdbcType="VARCHAR" />
+    <result column="order" property="order" jdbcType="TINYINT" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    acl_id, name, url, status, type, icon, order, description
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from s_sys_acl
+    where acl_id = #{aclId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from s_sys_acl
+    where acl_id = #{aclId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.susuhyc.syscommons.model.SysAcl" >
+    insert into s_sys_acl (acl_id, name, url, 
+      status, type, icon, 
+      order, description)
+    values (#{aclId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+      #{status,jdbcType=TINYINT}, #{type,jdbcType=TINYINT}, #{icon,jdbcType=VARCHAR}, 
+      #{order,jdbcType=TINYINT}, #{description,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.susuhyc.syscommons.model.SysAcl" >
+    insert into s_sys_acl
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="aclId != null" >
+        acl_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="icon != null" >
+        icon,
+      </if>
+      <if test="order != null" >
+        order,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="aclId != null" >
+        #{aclId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="icon != null" >
+        #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="order != null" >
+        #{order,jdbcType=TINYINT},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.susuhyc.syscommons.model.SysAcl" >
+    update s_sys_acl
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="icon != null" >
+        icon = #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="order != null" >
+        order = #{order,jdbcType=TINYINT},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where acl_id = #{aclId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.susuhyc.syscommons.model.SysAcl" >
+    update s_sys_acl
+    set name = #{name,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      type = #{type,jdbcType=TINYINT},
+      icon = #{icon,jdbcType=VARCHAR},
+      order = #{order,jdbcType=TINYINT},
+      description = #{description,jdbcType=VARCHAR}
+    where acl_id = #{aclId,jdbcType=BIGINT}
+  </update>
+
+  <select id="findAclAndRoles" resultType="com.susuhyc.syscommons.model.SysAclVO">
+    select sa.*,GROUP_CONCAT(sr.role_key) role_keys from  s_sys_role_acl sra
+    LEFT JOIN s_sys_acl sa  on sra.acl_id = sa.acl_id
+    and sa.`status`=1
+    LEFT JOIN s_sys_role sr on sr.role_id = sra.role_id GROUP BY acl_id
+  </select>
+</mapper>

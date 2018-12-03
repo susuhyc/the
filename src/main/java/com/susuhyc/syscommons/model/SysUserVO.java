@@ -1,9 +1,6 @@
-package com.susuhyc.userinfo.model;
+package com.susuhyc.syscommons.model;
 
-/**
- * Created by Administrator on 2017/10/16.
- */
-public class UserInfoVO extends UserInfo {
+public class SysUserVO extends SysUser {
     private String roleName;
     private String roleId;
     private String roleKey;

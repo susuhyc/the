@@ -3,29 +3,48 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
     <!-- 启用shrio授权注解拦截方式 -->
-    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+    <bean id="shiroFilter" class="com.susuhyc.shiro.FilterChainDefinitionFactoryBean">
         <!-- 装配 securityManager -->
         <property name="securityManager" ref="securityManager"/>
         <!-- 配置登陆页面 -->
         <property name="loginUrl" value="/index.jsp"/>
-        <!-- 登陆成功后的一面 -->
+        <!-- 登陆成功-->
         <property name="successUrl" value="/jsp/success.jsp"/>
-        <!--<span style="white-space:pre"></span>-->
-        <property name="unauthorizedUrl" value="/jsp/unauthorized.jsp"/>
+
+        <property name="unauthorizedUrl" value="/unauthorized.jsp"/>
         <!-- 具体配置需要拦截哪些 URL, 以及访问对应的 URL 时使用 Shiro 的什么 Filter 进行拦截.  -->
+        <!--数据库读取方式-->
         <property name="filterChainDefinitions">
             <value>
                 /index.jsp=anon
                 /jsp/success.jsp=anon
                 /jsp/fail.jsp=anon
-                /jsp/user.jsp = roles[user]
-                /user/admin = roles[admin]
                 /logout = logout
             </value>
         </property>
-        <!--数据库读取方式-->
-       <!-- <property name="filterChainDefinitions" value="#\{shiroManager.loadFilterChainDefinitions()\}"/>-->
+        <!--重写roles过滤规则-->
+        <property name="filters" >
+            <map>
+                <entry key="roles">
+                    <bean class="com.susuhyc.shiro.RolesAuthorizationFilter"/>
+                </entry>
+            </map>
+        </property>
     </bean>
+
+    <!--数据库处理权限-->
+   <!-- <bean id="filterChainDefinitionsBean"   class="com.susuhyc.shiro.FilterChainDefinitionFactoryBean">
+        <property name="filterChainDefinition">
+            <value>
+                /index.jsp=anon
+                /jsp/success.jsp=anon
+                /jsp/fail.jsp=anon
+                /logout = logout
+            </value>
+        </property>
+    </bean>-->
+
+
 
     <!-- 配置缓存管理器 -->
     <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
@@ -34,7 +53,7 @@
     </bean>
 
     <!-- 配置进行授权和认证的 Realm -->
-    <bean id="myRealm" class="com.susuhyc.util.ShiroRealm"/>
+    <bean id="myRealm" class="com.susuhyc.shiro.ShiroRealm"/>
     <!-- 配置 Shiro 的 SecurityManager Bean. -->
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
         <property name="cacheManager" ref="cacheManager"/>
